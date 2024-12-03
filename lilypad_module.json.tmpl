@@ -1,0 +1,42 @@
+{
+  "machine": {
+    "gpu": 1,
+    "cpu": 1000,
+    "ram": 8000
+  },
+  "job": {
+    "APIVersion": "V1beta1",
+    "Spec": {
+      "Deal": {
+        "Concurrency": 1
+      },
+      "Docker": {
+        "Entrypoint": ["python", "/workspace/run_llama.py"],
+        "EnvironmentVariables": [
+          {{ if .prompt }}"PROMPT={{ .prompt | js }}"{{ else }}"PROMPT=Tell me about LLaMA."{{ end }},
+          "HF_TOKEN={{ .hf_token | js }}"
+        ],
+        "Image": "noryev/llama2-7b:latest"
+      },
+      "Engine": "Docker",
+      "Network": {
+        "Type": "None"
+      },
+      "PublisherSpec": {
+        "Type": "IPFS"
+      },
+      "Resources": {
+        "GPU": "1"
+      },
+      "Timeout": 1800,
+      "Verifier": "Noop",
+      "Outputs": [
+        {
+          "Name": "outputs",
+          "StorageSource": "IPFS",
+          "Path": "/outputs"
+        }
+      ]
+    }
+  }
+}
