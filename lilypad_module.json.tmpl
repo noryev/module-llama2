@@ -13,8 +13,7 @@
       "Docker": {
         "Entrypoint": ["python", "/workspace/run_llama.py"],
         "EnvironmentVariables": [
-          {{ if .prompt }}"PROMPT={{ .prompt | js }}"{{ else }}"PROMPT=Tell me about LLaMA."{{ end }},
-          "HF_TOKEN={{ .hf_token | js }}"
+          {{ if .prompt }}"PROMPT={{ .prompt | js }}"{{ else }}"PROMPT=Tell me a story."{{ end }}
         ],
         "Image": "noryev/llama2-7b:latest"
       },

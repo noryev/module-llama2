@@ -12,11 +12,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 def get_prompt():
     # Use sys.argv[1] if available, otherwise fall back to environment variable or default
     if len(sys.argv) > 1:
-        prompt = " ".join(sys.argv[1:])  # Join all arguments to allow for prompts with spaces
+        prompt = " ".join(sys.argv[1:])
     else:
         prompt = os.environ.get('PROMPT', os.environ.get('DEFAULT_PROMPT', "Tell me about LLaMA."))
     
-    # Remove any quotes and clean
     prompt = prompt.strip('"')
     logging.info(f"Using prompt: {prompt}")
     return prompt
@@ -28,21 +27,19 @@ def main():
         # Get the prompt
         prompt = get_prompt()
         
-        # Load the model
-        logging.info("Loading LLaMA model")
+        # Load the model from cached directory
+        logging.info("Loading LLaMA model from cache")
+        model_path = "/workspace/model_cache"
+        
         model = AutoModelForCausalLM.from_pretrained(
-            "meta-llama/Llama-2-7b-hf",
+            model_path,
             device_map="auto",
             torch_dtype=torch.float16,
-            low_cpu_mem_usage=True,
-            use_auth_token=os.environ.get('HF_TOKEN')
+            low_cpu_mem_usage=True
         )
 
-        logging.info("Loading tokenizer")
-        tokenizer = AutoTokenizer.from_pretrained(
-            "meta-llama/Llama-2-7b-hf", 
-            use_auth_token=os.environ.get('HF_TOKEN')
-        )
+        logging.info("Loading tokenizer from cache")
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
 
         # Generate response
         logging.info("Generating response")
